@@ -1,4 +1,4 @@
-from com.logfinder.gui.LogFinderInterface import LogFinderInterface
+from logFinder.com.logfinder.gui.LogFinderInterface import LogFinderInterface
 
 
 class LogFinderMain(object):

@@ -1,8 +1,7 @@
 import tkinter
 from tkinter.ttk import Label, Combobox
 
-from com.logfinder.util.LogFinderUtils import LogFinderUtils
-
+from logFinder.com.logfinder.util.LogFinderUtils import LogFinderUtils
 
 class LogFinderInterface(object):
 
@@ -19,7 +18,6 @@ class LogFinderInterface(object):
         combo.grid(column=1, row=0)
         logFinderUtils = LogFinderUtils()
         env = logFinderUtils.readProperties('environments')
-        print(env)
         combo['values'] = env[0][1].split(',');
         self.win.mainloop()
 

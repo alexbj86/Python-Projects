@@ -1,11 +1,11 @@
+import os
 from configparser import ConfigParser
-
 
 class LogFinderUtils(object):
 
     def readProperties(self, prop):
         config = ConfigParser()
-       #with open(r'../../resources/config.properties') as f:
-        item = config.read('../../resources/config.properties', encoding='utf-8-sig')
+        path = os.path.join(os.getcwd(), 'python/logfinder/resources/config.properties')
+        config.read(path, encoding='utf-8-sig')
         env = config.items(prop)
         return env
