@@ -1,6 +1,7 @@
 import os
 from configparser import ConfigParser
 
+
 class LogFinderUtils(object):
 
     def readProperties(self, prop):
