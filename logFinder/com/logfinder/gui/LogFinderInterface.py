@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import messagebox
-from tkinter.ttk import Label, Combobox, Entry, Button, Treeview
+from tkinter.ttk import Label, Combobox, Entry, Button, Treeview, Frame
 
 from logFinder.com.logfinder.businesslogic.LogFinderLogic import LogFinderLogic
 from logFinder.com.logfinder.util.LogFinderUtils import LogFinderUtils
@@ -10,8 +10,11 @@ class LogFinderInterface(object):
 
     def __init__(self):
         self.win = tkinter.Tk()
+        self.win.resizable(width=tkinter.FALSE, height=tkinter.FALSE)
         self.win.title("Log Finder")
-        self.win.geometry("1024x400")
+        self.win.geometry("800x400")
+        self.top_frame = Frame(self.win, width=600)
+        self.top_frame.grid(row=0, columnspan=3)
 
     def buildInterface(self):
         self.selectEnvironment()
@@ -23,44 +26,44 @@ class LogFinderInterface(object):
         self.win.mainloop()
 
     def selectEnvironment(self):
-        Label(self.win, text="Ambiente: ").grid(column=0, row=0, padx=10)
-        self.win.comboEnv = Combobox(self.win)
-        self.win.comboEnv.grid(column=1, row=0)
+        Label(self.top_frame, text="Ambiente: ").grid(column=0, row=0, padx=10)
+        self.top_frame.comboEnv = Combobox(self.top_frame)
+        self.top_frame.comboEnv.grid(column=1, row=0)
         logFinderUtils = LogFinderUtils()
         env = logFinderUtils.readProperties('environments')
-        self.win.comboEnv['values'] = env[0][1].split(',')
+        self.top_frame.comboEnv['values'] = env[0][1].split(',')
 
     def selectServer(self):
-        Label(self.win, text="FE/BE: ").grid(row=0, column=2, padx=40)
-        self.win.comboServer = Combobox(self.win)
-        self.win.comboServer.grid(row=0, column=3)
-        self.win.comboServer['values'] = "FE BE"
+        Label(self.top_frame, text="FE/BE: ").grid(row=0, column=2, padx=40)
+        self.top_frame.comboServer = Combobox(self.top_frame)
+        self.top_frame.comboServer.grid(row=0, column=3)
+        self.top_frame.comboServer['values'] = "FE BE"
 
     def insertClientCode(self):
-        Label(self.win, text="Postazione: ").grid(row=2, column=0, pady=20, padx=10)
-        self.win.clientCode = Entry(self.win, width=23, textvariable=tkinter.StringVar)
-        self.win.clientCode.grid(row=2, column=1, padx=20)
+        Label(self.top_frame, text="Postazione: ").grid(row=2, column=0, pady=20, padx=10)
+        self.top_frame.clientCode = Entry(self.top_frame, width=23, textvariable=tkinter.StringVar)
+        self.top_frame.clientCode.grid(row=2, column=1, padx=20)
 
     def insertDate(self):
-        Label(self.win, text="Data: ").grid(row=2, column=2, padx=40)
-        self.win.date = Entry(self.win, width=23, textvariable=tkinter.StringVar)
-        self.win.date.grid(row=2, column=3, padx=20)
+        Label(self.top_frame, text="Data: ").grid(row=2, column=2, padx=40)
+        self.top_frame.date = Entry(self.top_frame, width=23, textvariable=tkinter.StringVar)
+        self.top_frame.date.grid(row=2, column=3, padx=20)
 
     def buttonBar(self):
-        Button(self.win, text="Invia", command=self.sendForm).grid(row=3, column=0, padx=10)
-        Button(self.win, text="Reset", command=self.resetForm).grid(row=3, column=1, padx=5)
+        Button(self.top_frame, text="Invia", command=self.sendForm).grid(row=3, column=0, padx=10)
+        Button(self.top_frame, text="Reset", command=self.resetForm).grid(row=3, column=1, padx=5)
 
     def resetForm(self):
-        self.win.date.delete(0, tkinter.END)
-        self.win.clientCode.delete(0, tkinter.END)
-        self.win.comboServer.delete(0, tkinter.END)
-        self.win.comboEnv.delete(0, tkinter.END)
+        self.top_frame.date.delete(0, tkinter.END)
+        self.top_frame.clientCode.delete(0, tkinter.END)
+        self.top_frame.comboServer.delete(0, tkinter.END)
+        self.top_frame.comboEnv.delete(0, tkinter.END)
 
     def sendForm(self):
-        env = self.win.comboEnv.get()
-        server = self.win.comboServer.get()
-        clientCode = self.win.clientCode.get()
-        date = '*' + self.win.date.get() + '*'
+        env = self.top_frame.comboEnv.get()
+        server = self.top_frame.comboServer.get()
+        clientCode = self.top_frame.clientCode.get()
+        date = '*' + self.top_frame.date.get() + '*'
         try:
             LogFinderLogic().connect_to_server(env, server, clientCode, date)
             messagebox.showinfo("LogFinder", "Connesso al server di " + env + " " + server)
