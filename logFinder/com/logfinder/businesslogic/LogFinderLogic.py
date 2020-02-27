@@ -26,7 +26,7 @@ class LogFinderLogic(object):
         dict_file = {}
         if len(multiHost) > 1:
             for h in multiHost:
-                client.connect(hostname=h, username=username, key_filename=keyFile, port='22')
+                client.connect(hostname=h.strip(), username=username, key_filename=keyFile, port='22')
                 (stdin, stdout, stderr) = client.exec_command("cd "+url+" grep -l '" + clientCode + "' " + date)
                 dict_file[h] = stdout.readlines()
         else:
