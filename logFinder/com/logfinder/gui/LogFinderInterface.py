@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import messagebox
+from tkinter.filedialog import askdirectory
 from tkinter.ttk import Label, Combobox, Entry, Button, Treeview, Frame
 
 from logFinder.com.logfinder.businesslogic.LogFinderLogic import LogFinderLogic
@@ -12,7 +13,7 @@ class LogFinderInterface(object):
         self.win = tkinter.Tk()
         self.win.resizable(width=tkinter.FALSE, height=tkinter.FALSE)
         self.win.title("Log Finder")
-        self.win.geometry("800x400")
+        self.win.geometry("800x450")
         self.top_frame = Frame(self.win, width=600)
         self.top_frame.grid(row=0, columnspan=3)
 
@@ -65,7 +66,6 @@ class LogFinderInterface(object):
         date = '*' + self.top_frame.date.get() + '*'
         try:
             files = LogFinderLogic().connect_to_server(env, server, clientCode, date)
-            print(files)
             self.dataTable(files)
             messagebox.showinfo("LogFinder", "Connesso al server di " + env + " " + server)
         except Exception as e:
@@ -83,3 +83,11 @@ class LogFinderInterface(object):
             for v in files.values():
                 for l in v:
                     self.table.insert("", "end", values=(l, k))
+        self.saveFileBtn()
+
+    def saveFileBtn(self):
+        Button(self.win, text="Download", command=self.chooseDir).grid(row=2, column=0, padx=10)
+
+    def chooseDir(self):
+        dir_name = askdirectory()
+        print(dir_name)
