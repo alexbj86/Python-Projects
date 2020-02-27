@@ -1,5 +1,4 @@
 import paramiko
-import os
 
 from logFinder.com.logfinder.util.LogFinderUtils import LogFinderUtils
 
@@ -17,9 +16,21 @@ class LogFinderLogic(object):
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         host = self.ip_dict.get(environment).get(server)
+        url = '/home/tomcat/liferay-portal-6.1.20-ee-ga2/apache-tomcat/logs/ibk;'
+        if server == 'BE':
+            url = '/home/tomcat/apache-tomcat/logs/ibk;'
         logFinderUtils = LogFinderUtils()
         username = logFinderUtils.readProperties('username')[0][1]
         keyFile = logFinderUtils.readProperties('keyFile')[0][1]
-        client.connect(hostname=host, username=username, key_filename=keyFile, port='22')
-        (stdin, stdout, stderr) = client.exec_command("cd /home/tomcat/liferay-portal-6.1.20-ee-ga2/apache-tomcat/logs/ibk; grep -l '" + clientCode + "' " + date)
-
+        multiHost = host.split(",")
+        dict_file = {}
+        if len(multiHost) > 1:
+            for h in multiHost:
+                client.connect(hostname=h, username=username, key_filename=keyFile, port='22')
+                (stdin, stdout, stderr) = client.exec_command("cd "+url+" grep -l '" + clientCode + "' " + date)
+                dict_file[h] = stdout.readlines()
+        else:
+            client.connect(hostname=host, username=username, key_filename=keyFile, port='22')
+            (stdin, stdout, stderr) = client.exec_command("cd " + url + " grep -l '" + clientCode + "' " + date)
+            dict_file[host] = stdout.readlines()
+        return dict_file

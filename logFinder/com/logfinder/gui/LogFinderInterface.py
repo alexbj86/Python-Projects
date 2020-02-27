@@ -22,7 +22,6 @@ class LogFinderInterface(object):
         self.insertClientCode()
         self.insertDate()
         self.buttonBar()
-        self.dataTable()
         self.win.mainloop()
 
     def selectEnvironment(self):
@@ -65,15 +64,22 @@ class LogFinderInterface(object):
         clientCode = self.top_frame.clientCode.get()
         date = '*' + self.top_frame.date.get() + '*'
         try:
-            LogFinderLogic().connect_to_server(env, server, clientCode, date)
+            files = LogFinderLogic().connect_to_server(env, server, clientCode, date)
+            print(files)
+            self.dataTable(files)
             messagebox.showinfo("LogFinder", "Connesso al server di " + env + " " + server)
         except Exception as e:
             messagebox.showerror("LogFinder", e)
 
-    def dataTable(self):
-        self.table = Treeview(columns="#0, #1")
-        self.table.heading("#0", text="File")
-        self.table.column("#0", minwidth=0, width=200, stretch=tkinter.NO)
-        self.table.heading("#1", text="Macchina")
-        self.table.column("#1", minwidth=0, width=200, stretch=tkinter.NO)
-        self.table.grid(column=0, row=4, padx=10, pady=30)
+    def dataTable(self, files):
+        self.table = Treeview(self.win)
+        self.table["columns"] = ("1", "2")
+        self.table.column("1", minwidth=0, width=250, stretch=tkinter.NO)
+        self.table.heading("1", text="File")
+        self.table.column("2", minwidth=0, width=250, stretch=tkinter.NO)
+        self.table.heading("2", text="Macchina")
+        self.table.grid(row=1, column=0, padx=10, pady=30)
+        for k in files.keys():
+            for v in files.values():
+                for l in v:
+                    self.table.insert("", "end", values=(l, k))
