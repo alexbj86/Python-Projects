@@ -65,7 +65,7 @@ class LogFinderInterface(object):
         clientCode = self.top_frame.clientCode.get()
         date = '*' + self.top_frame.date.get() + '*'
         try:
-            files = LogFinderLogic().connect_to_server(env, server, clientCode, date)
+            files = LogFinderLogic().get_list_files(clientCode, date, env, server)
             self.dataTable(files)
             messagebox.showinfo("LogFinder", "Connesso al server di " + env + " " + server)
         except Exception as e:
@@ -89,5 +89,9 @@ class LogFinderInterface(object):
         Button(self.win, text="Download", command=self.chooseDir).grid(row=2, column=0, padx=10)
 
     def chooseDir(self):
-        dir_name = askdirectory()
-        print(dir_name)
+        local_dir_name = askdirectory()
+        for s in self.table.selection():
+            sel_rows = self.table.item(s).get('values')
+            LogFinderLogic().download_file(sel_rows[0].strip(), sel_rows[1], local_dir_name)
+
+        # print(self.table.item(s).get('values'))
