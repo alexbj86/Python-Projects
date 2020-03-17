@@ -28,6 +28,11 @@ class LogFinderLogic(object):
         return client, host, keyFile, url, username
 
     def get_list_files(self, clientCode, date, environment, server):
+        # setting global variables for environment and server selected
+        global envir
+        envir = environment
+        global sv
+        sv = server
         client, host, keyFile, url, username = self.connect_to_server(server, environment)
         multiHost = host.split(",")
         dict_file = {}
@@ -47,19 +52,19 @@ class LogFinderLogic(object):
 
         return dict_file
 
-    def download_file(self, file, ip, local_dir_name):
+    def download_file(self, file, ip_param, local_dir_name):
         # print(list(self.ip_dict.values()))
-        for i in list(self.ip_dict.values()):
-            for j in i.values():
-                if ip.strip() == j.strip():
-                    serv = list(i.keys())[list(i.values()).index(j)]
-                    client, host, keyFile, url, username = self.connect_to_server(serv)
-                    client.connect(hostname=ip.strip(), username=username, key_filename=keyFile, port='22')
-                    sftp = client.open_sftp()
-                    remotepath = str(url+'/'+file)
-                    print(remotepath)
-                    localpath = str(local_dir_name + '/pippo.log')
-                    print(localpath)
-                    sftp.get(remotepath, localpath)
-                    sftp.close()
-                    client.close()
+        for i in list(self.ip_dict.get(envir).get(sv).split(",")):
+            # for j in i.values():
+            if ip_param.strip() == i.strip():
+                #serv = list(i.keys())[list(i.values()).index(j)]
+                client, host, keyFile, url, username = self.connect_to_server(sv)
+                client.connect(hostname=ip_param.strip(), username=username, key_filename=keyFile, port='22')
+                sftp = client.open_sftp()
+                remotepath = str(url + '/' + file)
+                print(remotepath)
+                localpath = str(local_dir_name + '/' + file)
+                print(localpath)
+                sftp.get(remotepath, localpath)
+                sftp.close()
+                client.close()

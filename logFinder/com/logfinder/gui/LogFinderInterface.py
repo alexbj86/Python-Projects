@@ -91,8 +91,11 @@ class LogFinderInterface(object):
     def chooseDir(self):
         local_dir_name = askdirectory()
         print(local_dir_name)
-        for s in self.table.selection():
-            sel_rows = self.table.item(s).get('values')
-            LogFinderLogic().download_file(sel_rows[0].strip(), sel_rows[1], local_dir_name)
-
+        try:
+            for s in self.table.selection():
+                sel_rows = self.table.item(s).get('values')
+                LogFinderLogic().download_file(sel_rows[0].strip(), sel_rows[1], local_dir_name)
+                messagebox.showinfo("LogFinder", "Download completato")
+        except Exception as e:
+            messagebox.showerror("LogFinder", e)
         # print(self.table.item(s).get('values'))
